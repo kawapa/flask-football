@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="auth-center">
+    <h2>Logowanie</h2>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.username.label }}<br>
+            {{ form.username() }}
+        </p>
+        <p>
+            {{ form.password.label }}<br>
+            {{ form.password() }}
+        </p>
+        <p>
+            {{ form.submit() }}
+        </p>
+    </form>
+    <div class="auth-links">
+        Nie masz konta? <a href="mailto:foo">Odezwij się do mnie</a>.
+    </div>
+</div>
+{% endblock %}

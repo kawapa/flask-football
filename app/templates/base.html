@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Football App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+
+</head>
+
+<body>
+
+    <main>
+        <nav class="nav-links" aria-label="Główna nawigacja">
+            <a href="/">Strona główna</a>
+            {% if current_user.is_authenticated %}
+            <a href="/players">Zawodnicy</a>
+            {% endif %}
+            {% if current_user.is_admin %}
+            {% endif %}
+            {% if current_user.is_authenticated %}
+            <a href="/logout">Wyloguj się</a>
+            {% else %}
+            <a href="/login">Logowanie</a>
+            {% endif %}
+        </nav>
+        <hr>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div>{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+        {% block content %}{% endblock %}
+    </main>
+
+</body>
+
+</html>

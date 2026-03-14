@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Instrukcja oceniania zawodników</h2>
+<h3>Atak (AT)</h3>
+Jak dobrze zawodnik radzi sobie w ofensywie: strzały, drybling, wykończenie akcji, skuteczność pod bramką przeciwnika.
+
+<h3>Obrona (OB)</h3>
+Umiejętność odbioru piłki, ustawianie się w defensywie, blokowanie strzałów, przeszkadzanie przeciwnikowi.
+
+<h3>Powrót do obrony (PD)</h3>
+Jak często i jak szybko zawodnik wraca z ataku do obrony, czy pomaga drużynie w defensywie po stracie piłki.
+
+<h3>Ruchliwość (RU)</h3>
+Aktywność na boisku, ilość biegania, udział w akcjach ofensywnych i defensywnych.
+
+<h3>Rozgrywanie (RO)</h3>
+Umiejętność podawania, przegląd pola, inicjowanie akcji, kierowanie grą, „rozdawanie piłek”.
+
+<h2>Lista użytkowników</h2>
+{% if current_user.is_authenticated and current_user.is_admin %}
+{% endif %}
+
+<table class="players-table">
+    <colgroup>
+        <col class="col-name">
+        <col class="col-ratings">
+    </colgroup>
+    <tr>
+        <th>Zawodnik</th>
+        <th>Oceny</th>
+        {% if current_user.is_admin %}
+        <th>Średnia</th>
+        {% endif %}
+    </tr>
+    {% for user in users %}
+    <tr>
+        <td>{{ user.name }}</td>
+        <td>
+            {% if user.id != current_user.id %}
+            <form method="post" action="{{ url_for('players.rate_user', user_id=user.id) }}" class="rating-form">
+                <label class="rating-label">AT: <input class="rating-input" type="number" name="attack" min="1" max="5" required value="{{ my_ratings[user.id].attack if my_ratings[user.id] else '' }}"></label>
+                <label class="rating-label">OB: <input class="rating-input" type="number" name="defense" min="1" max="5" required value="{{ my_ratings[user.id].defense if my_ratings[user.id] else '' }}"></label>
+                <label class="rating-label">PD: <input class="rating-input" type="number" name="return_to_defense" min="1" max="5" required value="{{ my_ratings[user.id].return_to_defense if my_ratings[user.id] else '' }}"></label>
+                <label class="rating-label">RU: <input class="rating-input" type="number" name="mobility" min="1" max="5" required value="{{ my_ratings[user.id].mobility if my_ratings[user.id] else '' }}"></label>
+                <label class="rating-label">RO: <input class="rating-input" type="number" name="playmaking" min="1" max="5" required value="{{ my_ratings[user.id].playmaking if my_ratings[user.id] else '' }}"></label>
+                <button type="submit" class="rate-button">Oceń</button>
+            </form>
+            {% else %}
+            (nie możesz ocenić siebie)
+            {% endif %}
+        </td>
+        {% if current_user.is_admin %}
+        <td>
+                {% if rankings[user.id] is not none %}
+                    {{ rankings[user.id] }}
+                {% else %}
+                    brak ocen
+                {% endif %}
+            </td>
+        {% endif %}
+    </tr>
+    {% endfor %}
+</table>
+
+{% if current_user.is_admin %}
+  <table>
+    <tr>
+      <th>Zawodnik</th>
+      <th>Akcje</th>
+    </tr>
+    {% for user in users %}
+    <tr>
+      <td>{{ user.name }}</td>
+      <td>
+        <form method="post" action="{{ url_for('players.delete_user', user_id=user.id) }}">
+          <button type="submit" class="delete-button">Usuń</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+{% endif %}
+
+{% endblock %}

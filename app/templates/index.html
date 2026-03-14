@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% if current_user.is_authenticated %}
+<h2>Hej {{ current_user.username }} 👋</h2>
+<p>Jesteś zalogowany. Możesz oceniać innych zawodników.</p>
+{% else %}
+<h2>Hej 👋</h2>
+<p>Jesteś niezalogowany. Zaloguj się aby ocenić innych zawodników.</p>
+{% endif %}
+
+{% if next_match %}
+<div class="match-meta">
+    <h2>Najbliższy mecz: {{ next_match.date.strftime('%d.%m.%Y') }}</h2>
+    {% if result %}
+    <span class="label-score">Pomarańczowi {{ result.orange_score }} : {{ result.blue_score }} Niebiescy</span>
+    {% endif %}
+</div>
+
+<h2>Składy</h2>
+<div class="team-grid">
+    <section class="team-card team-card-orange">
+        <h3>Pomarańczowi</h3>
+        <p>Średnia: <strong>{{ orange_average }}</strong></p>
+        <ul>
+            {% for player in orange_team %}
+            <li>{{ player.name }}</li>
+            {% endfor %}
+        </ul>
+    </section>
+
+    <section class="team-card team-card-blue">
+        <h3>Niebiescy</h3>
+        <p>Średnia: <strong>{{ blue_average }}</strong></p>
+        <ul>
+            {% for player in blue_team %}
+            <li>{{ player.name }}</li>
+            {% endfor %}
+        </ul>
+    </section>
+</div>
+{% else %}
+Brak zaplanowanych meczów.
+{% endif %}
+
+{% endblock %}
