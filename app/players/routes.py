@@ -32,20 +32,3 @@ def rate_user(user_id):
     db.session.commit()
     flash("Ocena zapisana!")
     return redirect(url_for("players.list_players"))
-
-
-# @players.route("/players/delete/<int:user_id>", methods=["POST"])
-# @login_required
-# @admin_required
-# def delete_user(user_id):
-#     user = User.query.get_or_404(user_id)
-
-#     # Delete all ratings where the user is the rater or rated
-#     Rating.query.filter((Rating.rater_id == user_id) | (Rating.rated_id == user_id)).delete()
-
-#     db.session.delete(user)
-#     db.session.commit()
-#     flash("Zawodnik oraz powiązane oceny zostały usunięte.")
-#     return redirect(url_for("players.list_players"))
-
-

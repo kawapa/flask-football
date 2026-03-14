@@ -131,3 +131,6 @@ cython_debug/
 
 # VS Code settings
 .vscode/
+
+# User specific files
+generate_users.py

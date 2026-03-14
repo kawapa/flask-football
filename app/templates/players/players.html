@@ -63,23 +63,4 @@ Umiejętność podawania, przegląd pola, inicjowanie akcji, kierowanie grą, �
     {% endfor %}
 </table>
 
-{% if current_user.is_admin %}
-  <table>
-    <tr>
-      <th>Zawodnik</th>
-      <th>Akcje</th>
-    </tr>
-    {% for user in users %}
-    <tr>
-      <td>{{ user.name }}</td>
-      <td>
-        <form method="post" action="{{ url_for('players.delete_user', user_id=user.id) }}">
-          <button type="submit" class="delete-button">Usuń</button>
-        </form>
-      </td>
-    </tr>
-    {% endfor %}
-  </table>
-{% endif %}
-
 {% endblock %}
