@@ -15,7 +15,7 @@ def login():
     form = LoginForm()
 
     if form.validate_on_submit():
-        user = User.query.filter_by(username=form.username.data.strip()).first()
+        user = User.query.filter_by(username=form.username.data.lower().strip()).first()
 
         if user and user.check_password(form.password.data):
             login_user(user)
