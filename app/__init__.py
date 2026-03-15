@@ -21,12 +21,12 @@ def register_extensions(app):
 def register_blueprints(app):
     from .auth.routes import auth
     from .main.routes import main
-    # from .matches.routes import matches
+    from .matches.routes import matches
     from .players.routes import players
 
     app.register_blueprint(auth)
     app.register_blueprint(main)
-    # app.register_blueprint(matches, url_prefix="/matches")
+    app.register_blueprint(matches, url_prefix="/matches")
     app.register_blueprint(players)
 
 

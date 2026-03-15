@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Historia meczów</h2>
+
+{% if matches %}
+  <div class="history-list">
+    {% for item in matches %}
+      <article>
+        <div class="match-meta">
+          <strong>{{ item.match.date.strftime('%d.%m.%Y') }}</strong>
+          {% if item.result %}
+            <span class="label-score">Pomarańczowi {{ item.result.orange_score }} : {{ item.result.blue_score }} Niebiescy</span>
+          {% else %}
+            <span class="label-score label-score-pending">Brak wyniku</span>
+          {% endif %}
+          {% if current_user.is_authenticated and current_user.is_admin %}
+            {% set match_date_str = item.match.date.strftime('%d.%m.%Y') %}
+            <span class="label-delete">
+              <form method="post" action="{{ url_for('matches.delete_match', match_id=item.match.id) }}" style="display:inline">
+                <button type="submit" class="delete-link" onclick="return confirm('Czy na pewno chcesz usunąć mecz z dnia {{ match_date_str }}?')">Usuń mecz</button>
+              </form>
+            </span>
+          {% endif %}
+        </div>
+
+        <div class="team-grid">
+          <section class="team-card team-card-orange">
+            <h3>Pomarańczowi</h3>
+            {% if user.is_authenticated and user.is_admin %}
+            <p>Średnia: <strong>{{ item.orange_average }}</strong></p>
+            {% endif %}
+            <ul>
+              {% for player in item.orange_team %}
+            <li>{{ player.name }} {% if user.is_authenticated and user.is_admin %}
+                <strong>{{ player.average_rating }}</strong>
+                {% endif %}
+            </li>
+              {% endfor %}
+            </ul>
+          </section>
+
+          <section class="team-card team-card-blue">
+            <h3>Niebiescy</h3>
+            {% if user.is_authenticated and user.is_admin %}
+            <p>Średnia: <strong>{{ item.blue_average }}</strong></p>
+            {% endif %}
+            <ul>
+              {% for player in item.blue_team %}
+            <li>{{ player.name }} {% if user.is_authenticated and user.is_admin %}
+                <strong>{{ player.average_rating }}</strong>
+                {% endif %}
+            </li>
+              {% endfor %}
+            </ul>
+          </section>
+        </div>
+
+        {% if current_user.is_authenticated and current_user.is_admin %}
+          <form class="result-form" method="post" action="{{ url_for('matches.update_result', match_id=item.match.id) }}">
+            <label>
+              Pomarańczowi
+              <input type="number" name="orange_score" min="0" required value="{{ item.result.orange_score if item.result else '' }}">
+            </label>
+            <label>
+              Niebiescy
+              <input type="number" name="blue_score" min="0" required value="{{ item.result.blue_score if item.result else '' }}">
+            </label>
+            <button type="submit">Zapisz wynik</button>
+          </form>
+        {% endif %}
+      </article>
+    {% endfor %}
+  </div>
+{% else %}
+  <p>Brak rozegranych lub zaplanowanych meczów w historii.</p>
+{% endif %}
+{% endblock %}

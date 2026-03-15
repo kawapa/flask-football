@@ -11,31 +11,34 @@
 {% endif %}
 
 {% if next_match %}
-<div class="match-meta">
-    <h2>Najbliższy mecz: {{ next_match.date.strftime('%d.%m.%Y') }}</h2>
-    {% if result %}
-    <span class="label-score">Pomarańczowi {{ result.orange_score }} : {{ result.blue_score }} Niebiescy</span>
-    {% endif %}
-</div>
-
-<h2>Składy</h2>
+<h2>Najbliższy mecz: {{ next_match.date.strftime('%d.%m.%Y') }}</h2>
 <div class="team-grid">
     <section class="team-card team-card-orange">
         <h3>Pomarańczowi</h3>
+        {% if user.is_authenticated and user.is_admin %}
         <p>Średnia: <strong>{{ orange_average }}</strong></p>
+        {% endif %}
         <ul>
             {% for player in orange_team %}
-            <li>{{ player.name }}</li>
+            <li>{{ player.name }} {% if user.is_authenticated and user.is_admin %}
+                <strong>{{ player.average_rating }}</strong>
+                {% endif %}
+            </li>
             {% endfor %}
         </ul>
     </section>
 
     <section class="team-card team-card-blue">
         <h3>Niebiescy</h3>
+        {% if user.is_authenticated and user.is_admin %}
         <p>Średnia: <strong>{{ blue_average }}</strong></p>
+        {% endif %}
         <ul>
             {% for player in blue_team %}
-            <li>{{ player.name }}</li>
+            <li>{{ player.name }} {% if user.is_authenticated and user.is_admin %}
+                <strong>{{ player.average_rating }}</strong>
+                {% endif %}
+            </li>
             {% endfor %}
         </ul>
     </section>

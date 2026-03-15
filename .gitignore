@@ -134,3 +134,4 @@ cython_debug/
 
 # User specific files
 generate_users.py
+make_me_admin.py

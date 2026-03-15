@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Dodaj mecz</h2>
+<p>System automatycznie zbuduje dwa możliwie równe składy.</p>
+<form method="post">
+        <label for="match_date">Data meczu:</label>
+        <select id="match_date" name="match_date" required>
+        {% for d in mondays %}
+        <option value="{{ d.strftime('%Y-%m-%d') }}">{{ d.strftime('%d %B %Y') }}</option>
+        {% endfor %}
+    </select>
+    <p>Zawodnicy:</p>
+        <div class="checkbox-list">
+            {% for user in users %}
+                <label class="checkbox-row">
+                    <input type="checkbox" name="players" value="{{ user.id }}">
+                    <span>{{ user.name }}</span>
+                </label>
+            {% endfor %}
+        </div>
+
+    <p>Dodatkowi zawodnicy (niezarejestrowani):</p>
+        <div class="extra-player-grid">
+            {% for index in range(1, 3) %}
+                <div class="extra-player-row">
+                    <input class="stacked-input" type="text" name="extra_player_name{{ index }}" placeholder="Imię zawodnika">
+                    <input class="stacked-input" type="number" name="extra_player_rating{{ index }}" min="1" max="5" step="0.1" placeholder="Średnia ocena">
+                </div>
+            {% endfor %}
+        </div>
+
+        <button type="submit">Dodaj mecz</button>
+</form>
+{% endblock %}

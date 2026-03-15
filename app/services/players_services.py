@@ -1,18 +1,8 @@
-from datetime import date, datetime, timedelta
-from itertools import combinations
-
 from sqlalchemy import func
 
 from .. import db
 from ..models import Rating, User
-
-RATING_FIELDS = (
-    "attack",
-    "defense",
-    "return_to_defense",
-    "mobility",
-    "playmaking",
-)
+from .common_services import RATING_FIELDS
 
 def build_user_list_context(rater_id):
     users = User.query.order_by(User.name.asc()).all()
