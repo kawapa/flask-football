@@ -10,7 +10,13 @@
         <div class="match-meta">
           <strong>{{ item.match.date.strftime('%d.%m.%Y') }}</strong>
           {% if item.result %}
-            <span class="label-score">Pomarańczowi {{ item.result.orange_score }} : {{ item.result.blue_score }} Niebiescy</span>
+            {% if item.result.orange_score > item.result.blue_score %}
+              <span class="label-score label-score-orange">Pomarańczowi {{ item.result.orange_score }} : {{ item.result.blue_score }} Niebiescy</span>
+            {% elif item.result.orange_score < item.result.blue_score %}
+              <span class="label-score label-score-blue">Pomarańczowi {{ item.result.orange_score }} : {{ item.result.blue_score }} Niebiescy</span>
+            {% else %}
+              <span class="label-score label-score-draw">Pomarańczowi {{ item.result.orange_score }} : {{ item.result.blue_score }} Niebiescy</span>
+            {% endif %}
           {% else %}
             <span class="label-score label-score-pending">Brak wyniku</span>
           {% endif %}

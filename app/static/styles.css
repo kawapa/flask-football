@@ -117,16 +117,36 @@ main > a {
 	margin-bottom: 1rem;
 }
 
-.label-score {
+.label-score-blue {
 	display: inline-block;
 	padding: 0.2rem 0.65rem;
 	color: #ffffff;
-	background-color: #7253ed;
+	background-color: #3a7ad9;
+	border-radius: 999px;
+}
+
+.label-score-orange {
+	display: inline-block;
+	padding: 0.2rem 0.65rem;
+	color: #ffffff;
+	background-color: #e38b2c;
+	border-radius: 999px;
+}
+
+.label-score-draw {
+	display: inline-block;
+	padding: 0.2rem 0.65rem;
+	color: #ffffff;
+	background-color: #1cb166;
 	border-radius: 999px;
 }
 
 .label-score-pending {
+	display: inline-block;
+	padding: 0.2rem 0.65rem;
+	color: #ffffff;
 	background-color: #959396;
+	border-radius: 999px;
 }
 
 .team-grid {
