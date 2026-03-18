@@ -24,10 +24,9 @@ def get_upcoming_mondays(limit=4, from_date=None):
     return [first_monday + timedelta(days=7 * offset) for offset in range(limit)]
 
 
-def get_mondays_range(from_date=None):
-    current_date = from_date or date.today()
-    start_date = current_date - timedelta(weeks=3)
-    end_date = current_date + timedelta(weeks=3)
+def get_mondays_range():
+    start_date = date.today()
+    end_date = start_date + timedelta(weeks=3)
     mondays = []
     while start_date <= end_date:
         if start_date.weekday() == 0:
@@ -126,7 +125,7 @@ def build_match_player_pool(selected_user_ids, extra_players):
     return build_registered_player_pool(selected_user_ids) + extra_players
 
 
-def save_match(match_date, selected_user_ids, extra_players):
+def save_match(match_date, selected_user_ids, extra_players, assign_sequentially=False):
     match = Match.query.filter_by(date=match_date).first()
     is_new_match = match is None
 
@@ -135,17 +134,19 @@ def save_match(match_date, selected_user_ids, extra_players):
         db.session.add(match)
 
     selected_users = get_users_by_ids(selected_user_ids)
-    team_summary = generate_balanced_teams(build_match_player_pool(selected_user_ids, extra_players))
-
     match.players = selected_users
     match.extra_players = ", ".join(player["name"] for player in extra_players)
     match.participants = []
 
-    sort_order = 0
-    for team_color, team_players in ((TEAM_ORANGE, team_summary["orange_team"]), (TEAM_BLUE, team_summary["blue_team"])):
-        for player in team_players:
+    all_players = build_match_player_pool(selected_user_ids, extra_players)
+
+    if assign_sequentially:
+        orange_team = all_players[:6]
+        blue_team = all_players[6:12]
+        sort_order = 0
+        for player in orange_team:
             participant = MatchParticipant(
-                team_color=team_color,
+                team_color=TEAM_ORANGE,
                 average_rating=player["average_rating"],
                 playmaking_rating=player["playmaking_rating"],
                 sort_order=sort_order,
@@ -156,6 +157,40 @@ def save_match(match_date, selected_user_ids, extra_players):
                 participant.extra_name = player["name"]
             match.participants.append(participant)
             sort_order += 1
+        for player in blue_team:
+            participant = MatchParticipant(
+                team_color=TEAM_BLUE,
+                average_rating=player["average_rating"],
+                playmaking_rating=player["playmaking_rating"],
+                sort_order=sort_order,
+            )
+            if player["user"] is not None:
+                participant.user = player["user"]
+            else:
+                participant.extra_name = player["name"]
+            match.participants.append(participant)
+            sort_order += 1
+        team_summary = {
+            "orange_team": orange_team,
+            "blue_team": blue_team
+        }
+    else:
+        team_summary = generate_balanced_teams(all_players)
+        sort_order = 0
+        for team_color, team_players in ((TEAM_ORANGE, team_summary["orange_team"]), (TEAM_BLUE, team_summary["blue_team"])):
+            for player in team_players:
+                participant = MatchParticipant(
+                    team_color=team_color,
+                    average_rating=player["average_rating"],
+                    playmaking_rating=player["playmaking_rating"],
+                    sort_order=sort_order,
+                )
+                if player["user"] is not None:
+                    participant.user = player["user"]
+                else:
+                    participant.extra_name = player["name"]
+                match.participants.append(participant)
+                sort_order += 1
 
     return match, is_new_match, team_summary
 

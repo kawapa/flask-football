@@ -4,13 +4,12 @@
 <h2>Dodaj mecz</h2>
 <p>System automatycznie zbuduje dwa możliwie równe składy.</p>
 <form method="post">
-        <label for="match_date">Data meczu:</label>
         <select id="match_date" name="match_date" required>
         {% for d in mondays %}
-        <option value="{{ d.strftime('%Y-%m-%d') }}">{{ d.strftime('%d %B %Y') }}</option>
+        <option value="{{ d.strftime('%Y-%m-%d') }}">{{ d.strftime('%d.%m.%Y') }}</option>
         {% endfor %}
     </select>
-    <p>Zawodnicy:</p>
+    <p></p>
         <div class="checkbox-list">
             {% for user in users %}
                 <label class="checkbox-row">
